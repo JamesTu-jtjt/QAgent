@@ -1,5 +1,4 @@
 # QAgent
------
 
 > Don’t just automate tests. Automate your tasks\! 
 
