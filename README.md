@@ -1,4 +1,4 @@
-QAgent
+# QAgent
 -----
 
 > Don’t just automate tests. Automate your tasks\! 
@@ -9,7 +9,7 @@ QAgent is an AI-powered pipeline that automates the creation of QA documentation
 
 Full Description and Showcased Demo here (Appier folks only): https://appier.atlassian.net/wiki/spaces/Labs/pages/4144693249/TEAM+CoverIQ+QA+Workflow+Automation+with+QAgent+An+AI-Powered+Test+Planner
 
-----
+-----
 
 ### Table of Contents
 
