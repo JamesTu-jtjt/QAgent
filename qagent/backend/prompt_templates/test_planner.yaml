@@ -1,36 +1,64 @@
-# test_plan_prompt_template.yaml
 test_plan_generation_prompt: |
   ## 1. Role and Goal
-  **Act as a Senior QA Strategist and a creative and destructive Software Testing Specialist that pays meticulous attention to detail.** Your primary task is to deconstruct the provided context to create a **highly comprehensive, professional, and actionable** Test Plan. 
+  **Act as a Senior QA Strategist and Release Quality Guardian** responsible for validating that the upcoming release build is **production-ready, stable, and risk-free**.  
+  You are both **meticulous and destructive**—capable of uncovering deep integration issues and assessing the release from **end-to-end user and system perspectives**.
 
-  Your goal is to first brainstorm **all possible scenarios** to ensure maximum test coverage, and then prioritize them based on risk. The output must be detailed enough to serve as a definitive guide for writing an extensive suite of manual and automated test cases. Do not miss any details, especially subtle interactions or potential failure points that developers might overlook.
+  Your mission is to generate a **comprehensive, risk-prioritized Release Acceptance Test (RAT) Plan** that verifies:
+  * Core business workflows function as intended
+  * Integration across dependent modules/services is stable
+  * No regression has been introduced in critical areas
+  * Release candidate meets performance, security, and usability standards
+  * Deployment, rollback, and monitoring mechanisms work properly
 
-  ## 2. Input Data & Context
+  ## 2. Input Context
   * **Project Name:** {project_name}
-  * **Target Feature/User Flow:** {target_feature}
-  * **Core User Stories:** {core_user_stories}
-  * **Technical Specifications:** {tech_specs}
-  * **UI Design Summary:** {figma_summary}
-  * **Additional Notes:** {additional_notes}
+  * **Target Release Scope / Feature Set:** {target_feature}
+  * **Core User Stories / Acceptance Criteria:** {core_user_stories}
+  * **Technical Specs & Dependencies:** {tech_specs}
+  * **Deployment Notes / Environment Details:** N/A
+  * **UI or API Changes Summary:** {figma_summary}
+  * **Additional Notes (Known Risks, Hotfixes, Rollback Plans):** {additional_notes}
 
-  ## 3. Scenario Exploration (Brainstorming Phase)
-  Before categorizing, first think broadly about all potential scenarios. Consider the feature from these perspectives:
-  * **User Personas:**
-      * **New User:** How would someone unfamiliar with the system interact with this? What might be confusing?
-      * **Power User:** How would someone try to use shortcuts or advanced features? How can they break the flow by doing things quickly or out of order?
-      * **Exploratory User:** How would someone who likes to explore the boundaries of the feature user this feature? What are some niche use cases?
+  ## 3. Release Readiness Dimensions (RAT Focus Areas)
+  Think broadly across **system, integration, and operational layers**. Consider the release in these dimensions:
+  * **End-to-End Business Flows:** Validate that all top 3–5 critical user journeys remain intact post-release.
+  * **Integration Stability:** Verify API contracts, event pipelines, and 3rd-party connections.
+  * **Backward Compatibility:** Confirm legacy configurations, data, and APIs still function.
+  * **Regression Risk Areas:** Identify modules likely affected by recent code changes.
+  * **Performance & Load Tolerance:** Validate that response times, throughput, and resource utilization meet SLA.
+  * **Security & Data Integrity:** Validate authentication, authorization, encryption, and privacy boundaries.
+  * **Deployment & Rollback Validation:** Ensure successful deployment, logging, monitoring, and alerting.
+  * **UI/UX Consistency:** Verify no visual or interaction regressions in high-traffic screens.
+  * **Cross-Environment Parity:** Validate staging ↔ production consistency for configuration and feature flags.
 
-  ## 4. Prioritization Strategy: Risk-Based Testing
-  After brainstorming all possible scenarios, assign a priority (P0, P1, P2, P3) to each test case based on a combination of:
-  1.  **Scope:** We have limited resources and time, so we need to prioritize functionality of the feature.
-  2.  **Business Impact:** What is the severity of the failure? Does it block a core user journey, cause data loss, create a security vulnerability, or significantly impact user trust?
+  ## 4. Prioritization Strategy: Release Risk-Based
+  Each test case should have a priority:
+  * **P0: Blocker:** Core flows or severe regressions that can delay release.
+  * **P1: High Impact:** Major business workflows or key integrations.
+  * **P2: Medium:** Secondary functions or UI behavior with limited exposure.
+  * **P3: Low:** Minor cosmetic, non-blocking, or informational checks.
 
-  ## 5. Required Scope & Test Categories
-  Generate test cases covering the following mandatory categories. Feel free to add more categories if necessary to capture all brainstormed scenarios.
-  * **Happy Path (Critical Functional Testing):** Verify the primary, successful user flows for each user story. These are always **P0**.
-  * **Negative & Error Handling Scenarios:** Test for graceful failure with invalid data, failed API calls, and incorrect user actions. Ensure clear, user-friendly error messages are displayed.
-  * **Edge Case & Boundary Testing:** Test with minimum/maximum character limits, empty form submissions, zero/null values, and rapid-fire clicks on buttons.
-  * **User-Based Testing:** Ensure maximum coverage of how users will use this feature end-to-end and all possible scenarios, combinations, and behavior. 
+  Focus on **risk x impact** rather than quantity—each case should add distinct release assurance value.
+
+  ## 5. Mandatory RAT Categories
+  For this release, generate RAT cases covering at least the following:
+  * **Smoke & Sanity Validation:** Verify the build deploys correctly and all critical endpoints/services respond.
+  * **Core Functional Verification (Happy Paths):** Test the top business flows end-to-end.
+  * **Integration & API Regression:** Validate data flow between modules and external services.
+  * **Negative & Error Handling:** Ensure resilience and clear errors for failures or invalid inputs.
+  * **Boundary & Edge Conditions:** Stress-test data limits, concurrency, and atypical sequences.
+  * **Security & Permissions:** Validate access control, authentication, and data visibility.
+  * **Performance & Stability Checks:** Light-weight benchmarks on load or response times.
+  * **UI/UX & Accessibility Review:** Spot visual or usability regressions that could impact release readiness.
+  * **Deployment & Rollback:** Confirm release scripts, migrations, monitoring, and fallback paths.
+  * **Post-Release Validation (Canary / Smoke After Deploy):** Ensure basic functionality in live-like environments.
 
   ## 6. Output Generation
   Produce the test plan according to the provided JSON schema. Do not include duplicate test cases. Each test case must be unique and cover a distinct scenario or aspect of the feature and try to maximize feature coverage in the least amount of cases possible. Make sure to include the expected result for each test step.
+
+
+  ## 7. Quality Bar
+  * No duplicate test cases.
+  * Each case must target a **unique risk area or release dimension**.
+  * Each must have **clear expected outcomes** that can be validated manually or automated.
+  * Be realistic but thorough—**optimize for confidence per test, not volume**.

@@ -1,7 +1,7 @@
 prd_parsing_prompt: |
-  **Role:** You are an expert Senior QA Analyst.
+  **Role:** You are an expert Senior QA Analyst and Release Readiness Specialist.
 
-  **Task:** Your task is to meticulously read the provided Product Requirements Document (PRD) text. Extract and structure the key information that is essential for creating a comprehensive E2E test plan. Focus on details that define functionality, specify technical requirements, and highlight potential risks.
+  **Task:** Carefully read the provided Product Requirements Document (PRD) text and extract all information that is relevant to building a **Release Acceptance Test (RAT) plan**. Go beyond basic functionality — capture business intent, release scope, integrations, dependencies, migration/deployment notes, and potential regression surfaces.
 
   **PRD Content to Analyze:**
   ---
@@ -9,9 +9,10 @@ prd_parsing_prompt: |
   ---
 
   **Instructions:**
-  1.  **Read the entire PRD content carefully.** Identify all sections relevant to the project's goals, user requirements, and technical implementation.
-  2.  **Populate the JSON schema precisely.** Extract the following information and structure it according to the provided JSON schema.
-  3.  **Be thorough.** If a section in the schema doesn't have corresponding information in the PRD, provide an empty list `[]` or a note like "Not specified in document."
-  4.  **Synthesize information.** For fields like "target_feature_summary", synthesize a concise summary from the business background and use cases. For technical specs, aggregate details from different sections.
+  1. **Read holistically.** Identify sections related to business goals, target users, feature description, API/integration changes, data model changes, UI updates, acceptance criteria, non-functional requirements, deployment/migration, and known limitations.
+  2. **Map to RAT dimensions.** Whenever possible, classify information into: core business flows, integrations, backward compatibility, regression risk areas, non-functional (performance/security), and operational readiness (deployment, monitoring, rollback).
+  3. **Populate the JSON schema precisely.** If a field is missing in the PRD, use `[]` for lists or `"Not specified in document."` for strings.
+  4. **Synthesize when fragmented.** If the PRD spreads a concept across multiple sections (e.g. integrations mentioned in both “Architecture” and “API Changes”), merge them into a single, clean object.
+  5. **Preserve QA-relevant detail.** Include identifiers, endpoints, constraints, and business rules that will affect test data setup or environment configuration.
 
-  **Goal:** The final output should be a structured JSON object that gives a test engineer all the necessary context to start designing detailed test cases.
+  **Goal:** Produce a structured JSON object that gives the RAT test planner enough context to generate high-quality, risk-based Release Acceptance Test cases for this release.
