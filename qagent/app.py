@@ -28,12 +28,12 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'your-secret-key-here')
 
 # Configuration
-UPLOAD_FOLDER = 'uploads'
+# UPLOAD_FOLDER = 'uploads'
 OUTPUT_FOLDER = 'output'
 ALLOWED_EXTENSIONS = {'pdf', 'txt', 'md'}
 
 # Create directories if they don't exist
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+# os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
 def allowed_file(filename):
