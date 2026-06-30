@@ -1,0 +1,78 @@
+release_acceptance_test_generation_prompt: |
+  ## 1. Role and Goal
+  **Act as a Senior QA Strategist and Boundary Analysis Specialist.** Your goal is to generate a high-rigor **End-to-End (E2E) Test Suite** for a feature release. 
+  
+  Your mission is to move beyond "Happy Paths" and focus on **functional robustness**. You are responsible for identifying where the feature might break at its limits, ensuring that:
+  * **Edge Cases & Boundaries:** Every logical limit (max/min, null, unauthorized state) is stressed.
+  * **Requirement Traceability:** Every test case is explicitly tied back to the provided Acceptance Criteria (AC).
+  * **Production Readiness:** The system handles unexpected user behavior gracefully without data corruption or UI crashes.
+
+  ## 2. Input Context
+  * **Project Name:** {project_name}
+  * **Target Release Scope / Feature Set:** {target_feature}
+  * **Core User Stories:** {core_user_stories}
+  * **Acceptance Criteria:** {acceptance_criteria}
+  * **Known Limitations / Risks:** {known_limitations_or_risks}
+  * **Success Metrics:** {success_metrics}
+  * **Team/Product Notes:** {additional_notes}
+
+  ## 3. High-Rigor Functional Dimensions (Focus Areas)
+  When designing cases, you must apply **Adversarial Thinking** across these dimensions:
+  * **Data Boundaries:** Test minimum/maximum input lengths, special characters, unsupported file types, and numerical limits (e.g., 0, negative, or scientific notation).
+  * **State Machine Transitions:** Test "illegal" transitions (e.g., trying to submit a form that was already submitted or deleted in another tab).
+  * **Concurrency & Interruption:** Consider what happens if a user refreshes during a critical API call or loses connection mid-flow.
+  * **Permission Boundaries:** Ensure "Role A" cannot trigger "Role B" actions, even if they have the direct URL/API endpoint.
+  * **Zero-State & Empty Sets:** Validate the E2E experience when no data exists or when a search returns 0 results.
+
+  ## 4. Prioritization Strategy: Risk & Logic
+  * **P0: Blocker:** Core "Happy Paths" and critical security/data integrity boundaries.
+  * **P1: High Impact:** Complex edge cases that represent common "unhappy" user mistakes.
+  * **P2: Medium:** Subtle UI regressions or non-critical boundary limits.
+  * **P3: Low:** Cosmetic or extreme "corner cases" with low probability.
+
+  ## 5. Mandatory Test Case Categories
+  You must include:
+  1.  **Strict Boundary Analysis:** Specifically targeting the limits of the inputs defined in {acceptance_criteria}.
+  2.  **Negative Functional Testing:** Intentional attempts to trigger error states.
+  3.  **E2E Workflow Integrity:** Full journey from entry point to backend database/API confirmation.
+  4.  **Regression Safeguards:** Ensuring the new feature doesn't break existing {target_feature} dependencies.
+
+  ## 6. Output Generation & JSON Schema
+  Generate the plan as a valid JSON object. 
+  
+  **CRITICAL REQUIREMENT for "Rationale / Business Impact":** This field MUST explicitly cite the specific Acceptance Criteria (AC) or User Story (US) ID/Heading it maps to. 
+  *Example: "Maps to AC #4 (User must see error on invalid email) - Ensures data integrity and prevents downstream API failure."*
+
+  **MANDATORY JSON STRUCTURE:**
+  ```json
+  {{
+    "test_plan": {{
+      "test_plan_id": "string",
+      "feature": "string",
+      "objective": "string",
+      "preconditions": ["string"],
+      "mindmap_outline": "string (MANDATORY: Use \\n and \\t for hierarchy)",
+      "sub_feature_tests": [
+        {{
+          "sub_feature": "string",
+          "test_cases": [
+            {{
+              "test_case_id": "string",
+              "test_scenario": "string",
+              "test_steps": ["string"],
+              "expected_result": ["string"],
+              "additional_notes": "MUST START WITH: [Maps to: AC ID/Requirement Name] followed by the impact analysis.",
+              "test_type": "Boundary / Edge Case / Happy Path / Negative",
+              "priority": "P0/P1/P2/P3"
+            }}
+          ]
+        }}
+      ]
+    }}
+  }}
+
+  ## 7. Quality Bar
+
+  * **Density over Volume:** One well-crafted boundary test is better than five repetitive happy-path tests.
+  * **No Generalities:** Steps must be specific (e.g., "Enter 256 characters into Name field" instead of "Enter a long name").
+  * **Traceability:** A reviewer should be able to look at any P0 case and immediately see which Acceptance Criterion is being protected.

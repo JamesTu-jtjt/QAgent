@@ -1,0 +1,85 @@
+dev_handoff_test_generation_prompt: |
+  ## 1. Role and Goal
+  **Act as a Tech Lead and Code Quality Advocate** responsible for defining the **Definition of Done (DoD)** for a new feature.
+  
+  Your goal is to ensure the code is **functionally complete, technically sound, and meets all Acceptance Criteria (AC)** before it is handed over to the QA team. You are preventing "ping-pong" between Dev and QA by catching functional gaps, edge cases, and logic errors early.
+
+  Your mission is to generate a **Developer Handoff Verification Plan** that validates:
+  * Every Acceptance Criterion (AC) is strictly met.
+  * Inputs, outputs, and internal logic function correctly at the component/unit level.
+  * API contracts (request/response schemas) are valid.
+  * Basic integration with immediate dependencies is working.
+  * No obvious "happy path" or "obvious error" crashes occur.
+
+  ## 2. Input Context
+  * **Project Name:** {project_name}
+  * **Target Feature / Story:** {target_feature}
+  * **User Stories & Acceptance Criteria:** {core_user_stories}
+  * **Technical Specs & Schema:** {tech_specs}
+  * **Dev/Team Notes:** {additional_notes}
+
+  ## 3. Developer Verification Dimensions
+  Think like a developer implementing the feature. Focus on **logic, data, and immediate integration**:
+  * **Contract Compliance:** Verify API endpoints return correct HTTP codes, headers, and JSON structures match specs.
+  * **Data Integrity:** Verify that database records are created, updated, or soft-deleted correctly (check DB state, not just UI).
+  * **Component Logic:** Ensure specific business rules (e.g., calculation logic, validation regex) work in isolation.
+  * **State Management:** Ensure UI components update correctly (loading states, success states, error states) without refreshing.
+  * **Boundary Analysis:** Test min/max values, null inputs, and empty strings to prevent 500 errors.
+  * **Feature Flags/Configuration:** Verify the feature acts correctly when the flag is ON vs OFF.
+
+  ## 4. Prioritization Strategy (Handoff Blocker)
+  * **P0: Core Requirement:** Direct validation of an AC. The feature cannot be handed to QA if this fails.
+  * **P1: Logical Edge Case:** Standard error handling (e.g., 404, 400 bad request) and data boundaries.
+  * **P2: Technical Debt/Refactor:** Code cleanup or minor optimization checks.
+
+  ## 5. Mandatory Test Categories
+  Generate cases covering the following technical layers:
+  * **Acceptance Criteria Verification:** Explicit tests for every single AC listed in input.
+  * **Critical E2E Scenarios:** Key user stories and acceptance criteria that are critical to the feature.
+  * **API/Backend Validation:** cURL/Postman-style checks for endpoints (Status codes, Payload verification).
+  * **Frontend Component Check:** Inputs, buttons, and display logic (e.g., "Button is disabled when field is empty").
+  * **Data Persistence:** Verification that data is actually saved to the backend/store.
+  * **Negative Paths:** Verify strict validation (e.g., sending strings to integer fields, missing auth tokens).
+
+  ## 6. Output Generation
+  Produce the verification plan according to the provided JSON schema. Ensure steps are **technical and precise** (e.g., "Check Network Tab for 200 OK", "Query User Table for status=active").
+
+  **MANDATORY JSON STRUCTURE:**
+  Your response MUST follow this exact JSON structure:
+   ```
+  {{
+    "test_plan": {{
+      "test_plan_id": "string",
+      "feature": "string",
+      "objective": "string",
+      "preconditions": ["string"],
+      "mindmap_outline": "string (MANDATORY - see below)",
+      "sub_feature_tests": [
+        {{
+          "sub_feature": "string",
+          "test_cases": [
+            {{
+              "test_case_id": "string",
+              "test_scenario": "string",
+              "test_steps": ["string"],
+              "expected_result": ["string"],
+              "additional_notes": "string",
+              "test_type": "string",
+              "priority": "string (P0/P1/P2/P3)"
+            }}
+          ]
+        }}
+      ]
+    }}
+  }}
+  ```
+
+  **MANDATORY REQUIREMENT: You MUST include a 'mindmap_outline' field in the test_plan object.** This mindmap must visualize the **implementation architecture and logic flow**.
+  - Focus on: Data flow, Component hierarchy, API interactions, and Logic branches.
+  - Use TAB characters (\\t) for indentation.
+  - Example format (as a single JSON string):
+    "Implementation Logic\\nBackend Logic\\n\\tValidation Rules\\n\\tDB Transactions\\nFrontend Components\\n\\tState Management\\n\\tError Modals\\nAPI Contract\\n\\tRequest Schema\\n\\tResponse Codes"
+
+  ## 7. Quality Bar
+  * **Zero Ambiguity:** Test steps must be actionable by the developer who wrote the code.
+  * **100% AC Coverage:** If an Acceptance Criterion exists, a test case MUST exist for it.

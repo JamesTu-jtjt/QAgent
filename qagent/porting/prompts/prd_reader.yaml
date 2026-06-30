@@ -1,0 +1,34 @@
+prd_parsing_prompt: |
+  **Role:** You are an expert Senior QA Analyst and Release Readiness Specialist.
+
+  **Task:** Carefully read the provided Product Requirements Document (PRD) text and extract all information that is relevant to building a **Release Acceptance Test (RAT) plan**. Go beyond basic functionality — capture business intent, release scope, integrations, dependencies, migration/deployment notes, and potential regression surfaces.
+
+  **Team Context:**
+  - QA Team: {qa_team}
+  - Team-specific priorities and notes: {team_notes}
+
+  **PRD Content to Analyze:**
+  ---
+  {prd_content}
+  ---
+
+  **Instructions:**
+  1. **Read holistically and do not assume or make up any information.** Identify sections related to business goals, target users, feature description, API/integration changes, data model changes, UI updates, acceptance criteria, non-functional requirements, deployment/migration, and known limitations, but do not assume details that are not explicitly mentioned.
+  2. **Map to RAT dimensions.** Whenever possible, classify information into: core business flows, integrations, backward compatibility, regression risk areas, non-functional (performance/security), and operational readiness (deployment, monitoring, rollback).
+  3. **Populate the JSON schema precisely.** If a field is missing in the PRD, use `[]` for lists or `"Not specified in document."` for strings.
+  4. **Synthesize when fragmented.** If the PRD spreads a concept across multiple sections (e.g. integrations mentioned in both "Architecture" and "API Changes"), merge them into a single, clean object.
+  5. **Preserve QA-relevant detail.** Include identifiers, endpoints, constraints, and business rules that will affect test data setup or environment configuration.
+  6. **Focus on extracting up to date Acceptance Criteria.** If there are conflicting Acceptance Criteria, include all of them and note the conflicts in the `other_contextual_data` field.
+  6. **Extract as many user stories as possible.** Ensure coverage of critical E2E scenarios. 
+  7. **Keep team dynamics in mind.** When extracting information, consider the team-specific priorities and notes while extracting relevant information.
+  9. **Generate Chinese translations.** Provide Traditional Chinese (zh-tw) translations for key fields:
+     - `target_feature_summary` → `target_feature_summary_zh_tw`
+     - `core_user_stories` → `core_user_stories_zh_tw`
+     - `developer_user_stories` → `developer_user_stories_zh_tw` (if applicable)
+     - `system_interactions` → `system_interactions_zh_tw`
+     - `data_models_or_schemas` → `data_models_or_schemas_zh_tw`
+     - `api_endpoints` → `api_endpoints_zh_tw`
+     - `authentication_and_authorization` → `authentication_and_authorization_zh_tw`
+     All translations should be natural, fluent Chinese suitable for Taiwanese users.
+
+  **Goal:** Produce a structured JSON object that gives the RAT test planner enough context to generate high-quality, risk-based Release Acceptance Test cases for this release.
